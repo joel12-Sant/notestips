@@ -1,0 +1,30 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=a
+      - MYSQL_PASSWORD=b
+    ports:
+      - "3316:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - /mysql_data1:/var/lib/mysql1
+      - ./dbgestordenotas:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_container
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - "8086:80"
+    depends_on:
+      - mysql
