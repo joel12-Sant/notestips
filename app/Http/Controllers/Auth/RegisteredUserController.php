@@ -18,10 +18,19 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'username' => ['required', 'string', 'max:32', 'unique:users,username'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $request->validate(
+            [
+                'username' => ['required', 'string', 'max:32', 'unique:users,username'],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ],
+            [
+                'username.required' => 'El nombre de usuario es obligatorio.',
+                'username.unique' => 'Ese nombre de usuario ya está en uso.',
+                'username.max' => 'El nombre de usuario no puede tener más de 32 caracteres.',
+                'password.required' => 'La contraseña es obligatoria.',
+                'password.confirmed' => 'Las contraseñas no coinciden.',
+            ]
+        );
 
         $user = User::create([
             'username' => $request->username,
@@ -32,6 +41,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect('index');
+        return redirect('/');
     }
 }

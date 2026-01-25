@@ -1,51 +1,86 @@
-<!doctype html>
-<html lang="es">
+@extends('layout.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro</title>
-</head>
-
-<body>
+@section('content')
     <h1>Registro</h1>
 
-    {{-- Errores de validación --}}
-    @if ($errors->any())
-        <div style="border:1px solid #c00; padding:12px; margin-bottom:12px;">
-            <strong>Hay errores:</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('register.store') }}">
+    <form id="registerForm" method="POST" action="{{ route('register.store') }}">
         @csrf
 
-        <div style="margin-bottom:12px;">
-            <label for="username">Username</label><br>
-            <input id="username" type="text" name="username" value="{{ old('username') }}" required maxlength="32">
-        </div>
+        <label for="username">Username</label><br>
+        <input id="username" type="text" name="username" value="{{ old('username') }}" required maxlength="32">
+        @error('username')
+            <p>{{ $message }}</p>
+        @enderror
+        <br><br>
 
-        <div style="margin-bottom:12px;">
-            <label for="password">Password</label><br>
-            <input id="password" type="password" name="password" required>
-        </div>
+        <label for="password">Password</label><br>
+        <input id="password" type="password" name="password" required autocomplete="new-password">
+        <button type="button" id="toggle1">Mostrar</button>
+        <div id="passMsg"></div>
+        <br><br>
 
-        <div style="margin-bottom:12px;">
-            <label for="password_confirmation">Confirmar password</label><br>
-            <input id="password_confirmation" type="password" name="password_confirmation" required>
-        </div>
+        <label for="password_confirmation">Confirmar password</label><br>
+        <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+        <button type="button" id="toggle2">Mostrar</button>
+        <div id="confirmMsg"></div>
+        <br><br>
 
         <button type="submit">Crear cuenta</button>
     </form>
 
-    <hr>
-
     <p><a href="{{ url('/') }}">Volver al inicio</a></p>
-</body>
+@endsection
 
-</html>
+@section('script')
+    <script>
+        (() => {
+            const form = document.getElementById('registerForm');
+            const pass = document.getElementById('password');
+            const pass2 = document.getElementById('password_confirmation');
+
+            const passMsg = document.getElementById('passMsg');
+            const confirmMsg = document.getElementById('confirmMsg');
+
+            const toggle1 = document.getElementById('toggle1');
+            const toggle2 = document.getElementById('toggle2');
+
+            function toggleVisibility(input, btn) {
+                input.type = (input.type === 'password') ? 'text' : 'password';
+                btn.textContent = (input.type === 'password') ? 'Mostrar' : 'Ocultar';
+            }
+
+            toggle1.addEventListener('click', () => toggleVisibility(pass, toggle1));
+            toggle2.addEventListener('click', () => toggleVisibility(pass2, toggle2));
+
+            function validate() {
+                passMsg.textContent = '';
+                confirmMsg.textContent = '';
+
+                let ok = true;
+
+                if ((pass.value || '').length < 8) {
+                    passMsg.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
+                    ok = false;
+                }
+
+                // Solo valida "no coinciden" si ya escribió confirmación
+                if (pass2.value && pass.value !== pass2.value) {
+                    confirmMsg.textContent = 'Las contraseñas no coinciden.';
+                    ok = false;
+                }
+
+                return ok;
+            }
+
+            // opcional pero recomendado: validación en vivo
+            pass.addEventListener('input', validate);
+            pass2.addEventListener('input', validate);
+
+            form.addEventListener('submit', (e) => {
+                if (!validate()) e.preventDefault();
+            });
+
+            validate();
+        })();
+    </script>
+@endsection
