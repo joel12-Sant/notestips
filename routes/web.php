@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\NotesController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'index')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/notes', function () {
-        return view('notes');
-    })->name('notes');
+    Route::get('/notes', [NotesController::class, 'watch'])->name('notes');
+    Route::get('/notes/create', [NotesController::class, 'create'])->name('notes.create');
+    Route::post('/notes', [NotesController::class, 'store'])->name('notes.store');
 
     Route::post('/auth/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
