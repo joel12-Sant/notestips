@@ -4,11 +4,12 @@
             <h2 class="text-sm font-semibold text-slate-900">Notas</h2>
 
             <p class="mt-1 text-xs text-slate-500">
-                12 notas
+                {{ $notes->count() }}
+                notas
             </p>
         </div>
 
-        @if (empty($notes) || (is_countable($notes) && count($notes) === 0))
+        @if ($notes->isEmpty())
             <div class="p-8 text-center text-slate-500">
                 No se encontraron notas
             </div>
@@ -56,14 +57,15 @@
                                 @endif
                                 @if (!empty($due_date))
                                     <span class="inline-flex items-center gap-1 text-slate-500">
-                                        <span aria-hidden="true">📅</span>
+                                        <span aria-hidden="true"><x-icons.calendar class="w-1 h-1" />
+                                        </span>
                                         {{ $due_date }}
                                     </span>
                                 @endif
                             </div>
 
                             <div class="flex items-center gap-1 text-xs text-slate-500">
-                                <span aria-hidden="true">🕒</span>
+                                <span aria-hidden="true"><x-icons.clock class="w-1 h1" /></span>
                                 <span>{{ $lastEditedLabel }}</span>
                             </div>
                         </a>
