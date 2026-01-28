@@ -10,7 +10,11 @@ class NotesController extends Controller
 {
     public function watch()
     {
-        return view('notes.index');
+        $notes = Note::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->select('id', 'title', 'content', 'importance', 'due_date', 'updated_at')->get();
+
+        return view('notes.index', compact('notes'));
     }
 
     public function create()
@@ -30,7 +34,7 @@ class NotesController extends Controller
                 'title' => ['required', 'string', 'max:128'],
                 'content' => ['required', 'string'],
                 'importance' => ['nullable', Rule::in(['baja', 'media', 'alta'])],
-                'due_date' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:today'],
+                'due_date' => ['nullable', 'date_format:Y-m-d'], // ,'after_or_equal:today'],
             ],
             [
                 'title.required' => 'El titulo es obligatorio',
