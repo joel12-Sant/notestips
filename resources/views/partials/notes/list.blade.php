@@ -20,7 +20,7 @@
                         $isActive = isset($selectedNoteId) && $selectedNoteId == $note->id;
 
                         $importance = $note->importance;
-                        $due_date = $note->due_date;
+                        $due_date = \Carbon\Carbon::parse($note->due_date)->format('d/m/Y');
 
                         $badgeClasses = match ($importance) {
                             'alta' => 'bg-red-50 text-red-600',
@@ -36,7 +36,7 @@
                     @endphp
 
                     <li>
-                        <a href="#"{{-- {{ route('notes', $note->id) }}" --}}
+                        <a href="{{ route('notes.show', $note->id) }}"
                             class="block p-4 transition
                                {{ $isActive ? 'bg-blue-100' : 'bg-white hover:bg-slate-50' }}"
                             @if ($isActive) aria-current="true" @endif>
@@ -44,9 +44,9 @@
                                 {{ $note->title ?? 'Nota sin título' }}
                             </h3>
 
-                            <p class="text-sm text-slate-500 line-clamp-2 mb-2">
+                            {{-- <p class="text-sm text-slate-500 line-clamp-2 mb-2">
                                 {{ $note->content ?? 'Sin contenido' }}
-                            </p>
+                            </p> --}}
 
                             <div class="flex items-center gap-2 text-xs mb-2">
                                 @if (!empty($importance))

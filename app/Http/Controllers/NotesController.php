@@ -8,18 +8,32 @@ use Illuminate\Validation\Rule;
 
 class NotesController extends Controller
 {
-    public function watch()
+    public function watch($note_id = null)
+    {
+        $notes = Note::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->select('id', 'title', 'importance', 'due_date', 'updated_at')->get();
+
+        $noteNotFound = false;
+        if ($note_id != null) {
+            $selectedNote = Note::where('user_id', auth()->id())
+                ->select('id', 'title', 'content', 'importance', 'due_date', 'updated_at')
+                ->find($note_id);
+        } else {
+            $noteNotFound = true;
+            $selectedNote = null;
+        }
+
+        return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
+    }
+
+    public function create()
     {
         $notes = Note::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->select('id', 'title', 'content', 'importance', 'due_date', 'updated_at')->get();
 
-        return view('notes.index', compact('notes'));
-    }
-
-    public function create()
-    {
-        return view('notes.create');
+        return view('notes.create', compact('notes'));
     }
 
     public function store(Request $request)
