@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notes/{note_id}/edit', [NotesController::class, 'edit'])->name('notes.edit');
     Route::put('/notes/{note_id}', [NotesController::class, 'update'])->name('notes.update');
     Route::delete('/notes/{note_id}', [NotesController::class, 'destroy'])->name('notes.destroy');
+    Route::get('/notes/search', [NotesController::class, 'search'])->name('notes.search');
 
     Route::get('/notes/{note_id}', [NotesController::class, 'show'])->name('notes.show');
     Route::post('/notes', [NotesController::class, 'store'])->name('notes.store');

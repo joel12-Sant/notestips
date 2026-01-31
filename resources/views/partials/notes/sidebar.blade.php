@@ -1,19 +1,21 @@
 <aside class="h-full w-72 border- bg-white">
     <div class="flex h-full flex-col px-4 py-5">
-        <header class="flex items-center gap-2">
+        <header>
+            <a href="{{ route('notes.index') }}" class="flex items-center gap-2">
+                <svg class="w-8 h-8 text-(--color-primary)" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                    focusable="false">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
+                    <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 0 4 19.5v-15Z" stroke="currentColor"
+                        stroke-width="2" stroke-linejoin="round" />
+                    <path d="M8 6h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M8 10h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
 
-            <svg class="w-8 h-8 text-(--color-primary)" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-                focusable="false">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 0 4 19.5v-15Z" stroke="currentColor"
-                    stroke-width="2" stroke-linejoin="round" />
-                <path d="M8 6h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                <path d="M8 10h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-
-            <h2 class="text-lg font-semibold text-slate-900">
-                NotesTips
-            </h2>
+                <h2 class="text-lg font-semibold text-slate-900">
+                    NotesTips
+                </h2>
+            </a>
         </header>
 
         <hr class="my-4 border-slate-200">

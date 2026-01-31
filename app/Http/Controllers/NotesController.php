@@ -8,22 +8,62 @@ use Illuminate\Validation\Rule;
 
 class NotesController extends Controller
 {
-    public function watch()
+    public function baseSearchQuery(Request $request)
     {
-        $notes = Note::where('user_id', auth()->id())
+        $q = trim((string) $request->query('q', ''));
+
+        $notesQuery = Note::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc')
-            ->select('id', 'title', 'importance', 'due_date', 'updated_at')->get();
+            ->select('id', 'title', 'importance', 'due_date', 'updated_at');
+
+        if ($q !== '') {
+            $notesQuery->where(function ($sub) use ($q) {
+                $sub->where('title', 'like', "%{$q}%")
+                    ->orWhere('content', 'like', "%{$q}%");
+            });
+        }
+
+        return $notesQuery;
+    }
+
+    public function search(Request $request)
+    {
+        $notes = $this->baseSearchQuery($request)->get()->map(function ($note) {
+            $importance = $note->importance;
+
+            $badgeClasses = match ($importance) {
+                'alta' => 'bg-red-50 text-red-600',
+                'media' => 'bg-amber-100 text-amber-700',
+                'baja' => 'bg-blue-100 text-blue-700',
+                default => 'bg-slate-100 text-slate-600',
+            };
+
+            return [
+                'id' => $note->id,
+                'title' => $note->title,
+                'importance' => $importance,
+                'badge_classes' => $badgeClasses,
+                'due_date_label' => $note->due_date ? \Carbon\Carbon::parse($note->due_date)->format('d/m/Y') : null,
+                'last_edited_label' => optional($note->updated_at)->diffForHumans(),
+            ];
+        });
+
+        return response()->json($notes);
+    }
+
+    public function watch(Request $request)
+    {
+        $notes = $this->baseSearchQuery($request)->get();
+
         $selectedNote = null;
         $noteNotFound = false;
 
         return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
     }
 
-    public function show($note_id)
+    public function show($note_id, Request $request)
     {
-        $notes = Note::where('user_id', auth()->id())
-            ->orderBy('updated_at', 'desc')
-            ->select('id', 'title', 'importance', 'due_date', 'updated_at')->get();
+        $notes = $this->baseSearchQuery($request)->get();
 
         $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date', 'updated_at')
             ->find($note_id);
@@ -37,11 +77,10 @@ class NotesController extends Controller
         return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $notes = Note::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->select('id', 'title', 'content', 'importance', 'due_date', 'updated_at')->get();
+
+        $notes = $this->baseSearchQuery($request)->get();
 
         return view('notes.create', compact('notes'));
     }
@@ -87,12 +126,10 @@ class NotesController extends Controller
         return redirect()->route('notes.index')->with('status', 'created');
     }
 
-    public function edit($note_id)
+    public function edit($note_id, Request $request)
     {
 
-        $notes = Note::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->select('id', 'title', 'content', 'importance', 'due_date', 'updated_at')->get();
+        $notes = $this->baseSearchQuery($request)->get();
 
         $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date')
             ->find($note_id);
