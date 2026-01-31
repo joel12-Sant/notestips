@@ -14,7 +14,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/notes/{note_id}', [NotesController::class, 'update'])->name('notes.update');
     Route::delete('/notes/{note_id}', [NotesController::class, 'destroy'])->name('notes.destroy');
 
-    Route::get('/notes/{note_id}', [NotesController::class, 'watch'])->name('notes.show');
+    Route::get('/notes/{note_id}', [NotesController::class, 'show'])->name('notes.show');
     Route::post('/notes', [NotesController::class, 'store'])->name('notes.store');
 
     Route::post('/auth/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

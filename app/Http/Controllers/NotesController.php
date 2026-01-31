@@ -8,24 +8,30 @@ use Illuminate\Validation\Rule;
 
 class NotesController extends Controller
 {
-    public function watch($note_id = null)
+    public function watch()
+    {
+        $notes = Note::where('user_id', auth()->id())
+            ->orderBy('updated_at', 'desc')
+            ->select('id', 'title', 'importance', 'due_date', 'updated_at')->get();
+        $selectedNote = null;
+        $noteNotFound = false;
+
+        return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
+    }
+
+    public function show($note_id)
     {
         $notes = Note::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc')
             ->select('id', 'title', 'importance', 'due_date', 'updated_at')->get();
 
-        if ($note_id) {
-            $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date', 'updated_at')
-                ->find($note_id);
-            if (! $selectedNote || auth()->user()->cannot('view', $selectedNote)) {
-                $selectedNote = null;
-                $noteNotFound = true;
-            } else {
-                $noteNotFound = false;
-            }
+        $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date', 'updated_at')
+            ->find($note_id);
+        if (! $selectedNote || auth()->user()->cannot('view', $selectedNote)) {
+            $selectedNote = null;
+            $noteNotFound = true;
         } else {
             $noteNotFound = false;
-            $selectedNote = null;
         }
 
         return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
