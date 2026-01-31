@@ -20,7 +20,7 @@
                         $isActive = isset($selectedNoteId) && $selectedNoteId == $note->id;
 
                         $importance = $note->importance;
-                        $due_date = \Carbon\Carbon::parse($note->due_date)->format('d/m/Y');
+                        $due_date = $note->due_date ? \Carbon\Carbon::parse($note->due_date)->format('d/m/Y') : null;
 
                         $badgeClasses = match ($importance) {
                             'alta' => 'bg-red-50 text-red-600',

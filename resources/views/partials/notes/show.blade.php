@@ -45,8 +45,8 @@
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
-            <a href="#{{--  --}}" class="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition"
-                aria-label="Editar">
+            <a href="{{ route('notes.edit', $selectedNote->id) }}"
+                class="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition" aria-label="Editar">
                 <x-icons.edit class="w-5 h-5" />
             </a>
 
