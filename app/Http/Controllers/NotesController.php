@@ -153,11 +153,17 @@ class NotesController extends Controller
     public function baseSearchQuery(Request $request)
     {
         $importances = ['baja', 'media', 'alta', 'none'];
+        $due_date_modes = ['with', 'none', 'exact'];
         $importance = trim((string) $request->query('importance', ''));
+        $due_date_mode = trim((string) $request->query('due_date_mode', ''));
+        $due_date = trim((string) $request->query('due_date', ''));
+        $q = trim((string) $request->query('q', ''));
         if (! in_array($importance, $importances, true)) {
             $importance = '';
         }
-        $q = trim((string) $request->query('q', ''));
+        if (! in_array($due_date_mode, $due_date_modes, true)) {
+            $due_date_mode = '';
+        }
 
         $notesQuery = Note::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc')
@@ -171,6 +177,14 @@ class NotesController extends Controller
         }
         if ($importance !== '') {
             $importance === 'none' ? $notesQuery->whereNull('importance') : $notesQuery->where('importance', $importance);
+        }
+        if ($due_date_mode !== '') {
+            if ($due_date_mode === 'none') {
+                $notesQuery->whereNull('due_date');
+            } elseif ($due_date_mode === 'with' && $due_date !== '') {
+                $notesQuery->where('due_date', $due_date);
+            }
+
         }
 
         return $notesQuery;

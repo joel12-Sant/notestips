@@ -37,21 +37,45 @@
                         class="w-full h-full outline-none text-gray-500 bg-transparent placeholder-gray-500 text-sm">
                 </form>
             </header>
-            <div class="mt-2 flex flex-col p-2 bg-white border-b border-slate-200">
+            <div id="filterChips" class="px-4 py-2 bg-white border-b border-slate-200 hidden">
 
-                <input type="hidden" name="q" value="{{ request('q') }}">
-                <label for="importance" class="block text-sm mb-2 text-slate-500">
-                    Importancia
-                </label>
-                <select id="importance" name="importance"
-                    class="w-full px-4 py-2 rounded-lg border bg-slate-50 text-slate-900 transition border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
-                    <option value="" @selected(request('importance') === '')>-- Todos --</option>
-                    <option value="none" @selected(request('importance') === 'none')>Sin importancia</option>
-                    <option value="alta" @selected(request('importance') === 'alta')>Alta</option>
-                    <option value="media" @selected(request('importance') === 'media')>Media</option>
-                    <option value="baja" @selected(request('importance') === 'baja')>Baja</option>
-                </select>
+            </div>
 
+            <div class="mt-2 bg-white border-b border-slate-200">
+                <div class="px-4 py-3">
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        <div>
+                            <label for="importance" class="block text-xs font-medium text-slate-600 mb-1">
+                                Importancia
+                            </label>
+                            <select id="importance" name="importance"
+                                class="w-full h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+                                <option value="">-- Todos --</option>
+                                <option value="none">Sin importancia</option>
+                                <option value="alta">Alta</option>
+                                <option value="media">Media</option>
+                                <option value="baja">Baja</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">
+                                Fecha
+                            </label>
+                            <div class="flex gap-2">
+                                <select id="due_date_mode" name="due_date_mode"
+                                    class="h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+                                    <option value="">Todas</option>
+                                    <option value="with">Con fecha</option>
+                                    <option value="none">Sin fecha</option>
+                                </select>
+
+                                <input id="due_date" type="date" name="due_date" value="{{ request('due_date') }}"
+                                    class="w-full h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <main class="flex-1 overflow-hidden">
