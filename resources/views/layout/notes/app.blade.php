@@ -46,6 +46,7 @@
                 <select id="importance" name="importance"
                     class="w-full px-4 py-2 rounded-lg border bg-slate-50 text-slate-900 transition border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
                     <option value="" @selected(request('importance') === '')>-- Todos --</option>
+                    <option value="none" @selected(request('importance') === 'none')>Sin importancia</option>
                     <option value="alta" @selected(request('importance') === 'alta')>Alta</option>
                     <option value="media" @selected(request('importance') === 'media')>Media</option>
                     <option value="baja" @selected(request('importance') === 'baja')>Baja</option>

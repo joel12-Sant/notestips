@@ -152,7 +152,7 @@ class NotesController extends Controller
 
     public function baseSearchQuery(Request $request)
     {
-        $importances = ['baja', 'media', 'alta'];
+        $importances = ['baja', 'media', 'alta', 'none'];
         $importance = trim((string) $request->query('importance', ''));
         if (! in_array($importance, $importances, true)) {
             $importance = '';
@@ -170,7 +170,7 @@ class NotesController extends Controller
             });
         }
         if ($importance !== '') {
-            $notesQuery->where('importance', $importance);
+            $importance === 'none' ? $notesQuery->whereNull('importance') : $notesQuery->where('importance', $importance);
         }
 
         return $notesQuery;

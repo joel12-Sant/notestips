@@ -35,7 +35,7 @@ if (notesList) {
       <ul role="list" class="divide-y divide-slate-200">
         ${notes.map(note => `
           <li>
-            <a href="/notes/${note.id}${(currentQ != 0) ? "?q=" + encodeURIComponent(currentQ) : ''}${currentI && currentQ ? "&" : ''}${(currentQ != 0) ? "importance=" + encodeURIComponent(currentI) : ''}"
+            <a href="/notes/${note.id}?${(currentQ != 0) ? "q=" + encodeURIComponent(currentQ) : ''}${currentI && currentQ ? "&" : ""}${(currentI != 0) ? "importance=" + encodeURIComponent(currentI) : ''}"
                class="block p-4 transition bg-white hover:bg-slate-50">
               <h3 class="mb-1 truncate text-slate-900">
                 ${escapeHtml(note.title ?? 'Nota sin título')}
