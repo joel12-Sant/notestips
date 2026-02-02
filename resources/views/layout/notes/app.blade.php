@@ -50,11 +50,11 @@
                             </label>
                             <select id="importance" name="importance"
                                 class="w-full h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
-                                <option value="">-- Todos --</option>
-                                <option value="none">Sin importancia</option>
-                                <option value="alta">Alta</option>
-                                <option value="media">Media</option>
-                                <option value="baja">Baja</option>
+                                <option value="" @selected(request('importance') === '')>-- Todos --</option>
+                                <option value="none" @selected(request('importance') === 'none')>Sin importancia</option>
+                                <option value="alta" @selected(request('importance') === 'alta')>Alta</option>
+                                <option value="media" @selected(request('importance') === 'media')>Media</option>
+                                <option value="baja" @selected(request('importance') === 'baja')>Baja</option>
                             </select>
                         </div>
 
@@ -65,10 +65,10 @@
                             <div class="flex gap-2">
                                 <select id="due_date_mode" name="due_date_mode"
                                     class="h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
-                                    <option value="">Todas</option>
-                                    <option value="with">Con fecha</option>
-                                    <option value="none">Sin fecha</option>
-                                    <option value="exact">Fecha exacta</option>
+                                    <option value="" @selected(request('due_date_mode') === '')>Todas</option>
+                                    <option value="with" @selected(request('due_date_mode') === 'with')>Con fecha</option>
+                                    <option value="none" @selected(request('due_date_mode') === 'none')>Sin fecha</option>
+                                    <option value="exact" @selected(request('due_date_mode') === 'exact')>Fecha exacta</option>
                                 </select>
 
                                 <input id="due_date" type="date" name="due_date" value="{{ request('due_date') }}"
@@ -80,9 +80,9 @@
                                 Por</label>
                             <select name="order_by" id="order_by"
                                 class="h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
-                                <option value="">-- Por defecto --</option>
-                                <option value="created_at">Fecha de creación</option>
-                                <option value="due_date">Fecha de realización</option>
+                                <option value="" @selected(request('order_by') === '')>-- Por defecto --</option>
+                                <option value="created_at" @selected(request('order_by') === 'created_at')>Fecha de creación</option>
+                                <option value="due_date" @selected(request('order_by') === 'due_date')>Fecha de realización</option>
                             </select>
                         </div>
                     </div>
