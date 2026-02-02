@@ -68,6 +68,7 @@
                                     <option value="">Todas</option>
                                     <option value="with">Con fecha</option>
                                     <option value="none">Sin fecha</option>
+                                    <option value="exact">Fecha exacta</option>
                                 </select>
 
                                 <input id="due_date" type="date" name="due_date" value="{{ request('due_date') }}"

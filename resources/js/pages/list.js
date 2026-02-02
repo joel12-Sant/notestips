@@ -45,7 +45,7 @@ if (notesList) {
           if (currentI && currentI !== "0") params.set("importance", currentI);
 
           if (currentMode) params.set("due_date_mode", currentMode);
-          if (currentMode === "with" && currentD) params.set("due_date", currentD);
+          if (currentMode === "exact" && currentD) params.set("due_date", currentD);
 
           const qs = params.toString();
           const href = `/notes/${note.id}` + (qs ? `?${qs}` : "");
@@ -89,7 +89,7 @@ if (notesList) {
   function syncDueDateUI() {
     if (!dateMode || !date) return;
     const mode = dateMode.value.trim();
-    const enabled = mode === "with";
+    const enabled = mode === "exact";
     date.disabled = !enabled;
     date.classList.toggle("opacity-50", !enabled);
     date.classList.toggle("cursor-not-allowed", !enabled);
@@ -109,7 +109,7 @@ if (notesList) {
     if (due_date_mode) url.searchParams.set('due_date_mode', due_date_mode);
     else url.searchParams.delete('due_date_mode');
 
-    if (due_date_mode === "with" && due_date) url.searchParams.set('due_date', due_date);
+    if (due_date_mode === "exact" && due_date) url.searchParams.set('due_date', due_date);
     else url.searchParams.delete('due_date');
 
     history.replaceState({}, '', url);
@@ -119,7 +119,7 @@ if (notesList) {
     if (importance) apiUrl.searchParams.set('importance', importance);
 
     if (due_date_mode) apiUrl.searchParams.set('due_date_mode', due_date_mode);
-    if (due_date_mode === "with" && due_date) apiUrl.searchParams.set('due_date', due_date);
+    if (due_date_mode === "exact" && due_date) apiUrl.searchParams.set('due_date', due_date);
 
     const res = await fetch(apiUrl.toString(), {
       headers: { "Accept": "application/json" }
@@ -191,9 +191,11 @@ if (notesList) {
     if (currentQ) chips.push(chip("Búsqueda", currentQ, "q"));
     if (currentI) chips.push(chip("Importancia", currentI, "importance"));
 
-    if (currentMode === "with") {
+    if (currentMode === "exact") {
       if (currentD) chips.push(chip("Fecha", formatDateYYYYMMDD(currentD), "due_date"));
-      else chips.push(chip("Fecha", "Con fecha", "due_date_mode"));
+      else chips.push(chip("Fecha", "Fecha exacta", "due_date_mode"));
+    } else if (currentMode === "with") {
+      chips.push(chip("Fecha", "Con fecha", "due_date_mode"));
     } else if (currentMode === "none") {
       chips.push(chip("Fecha", "Sin fecha", "due_date_mode"));
     }

@@ -181,8 +181,10 @@ class NotesController extends Controller
         if ($due_date_mode !== '') {
             if ($due_date_mode === 'none') {
                 $notesQuery->whereNull('due_date');
-            } elseif ($due_date_mode === 'with' && $due_date !== '') {
+            } elseif ($due_date_mode === 'exact' && $due_date !== '') {
                 $notesQuery->where('due_date', $due_date);
+            } elseif ($due_date_mode === 'with') {
+                $notesQuery->whereNotNull('due_date');
             }
 
         }
