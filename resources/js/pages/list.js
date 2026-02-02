@@ -2,6 +2,7 @@ const input = document.getElementById('q');
 const select = document.getElementById('importance');
 const dateMode = document.getElementById('due_date_mode');
 const date = document.getElementById('due_date');
+const order = document.getElementById('order_by')
 const notesList = document.getElementById('notesList');
 const notesCount = document.getElementById('notesCount');
 const chipsEl = document.getElementById('filterChips');
@@ -35,6 +36,7 @@ if (notesList) {
     const currentI = select ? select.value.trim() : "";
     const currentMode = dateMode ? dateMode.value.trim() : "";
     const currentD = date ? date.value.trim() : "";
+    const currentO = order ? order.value.trim() : "";
 
     notesList.innerHTML = `
       <ul role="list" class="divide-y divide-slate-200">
@@ -42,7 +44,8 @@ if (notesList) {
           const params = new URLSearchParams();
 
           if (currentQ) params.set("q", currentQ);
-          if (currentI && currentI !== "0") params.set("importance", currentI);
+          if (currentI) params.set("importance", currentI);
+          if (currentO) params.set("order_by", currentO);
 
           if (currentMode) params.set("due_date_mode", currentMode);
           if (currentMode === "exact" && currentD) params.set("due_date", currentD);
@@ -101,10 +104,13 @@ if (notesList) {
     const importance = select ? select.value.trim() : "";
     const due_date_mode = dateMode ? dateMode.value.trim() : "";
     const due_date = date ? date.value.trim() : "";
+    const order_by = order ? order.value.trim() : "";
+
 
     const url = new URL(window.location.href);
     if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
     if (importance) url.searchParams.set('importance', importance); else url.searchParams.delete('importance');
+    if (order_by) url.searchParams.set('order_by', order_by); else url.searchParams.delete('order_by');
 
     if (due_date_mode) url.searchParams.set('due_date_mode', due_date_mode);
     else url.searchParams.delete('due_date_mode');
@@ -117,6 +123,7 @@ if (notesList) {
     const apiUrl = new URL('/notes/search', window.location.origin);
     if (q) apiUrl.searchParams.set('q', q);
     if (importance) apiUrl.searchParams.set('importance', importance);
+    if (order_by) apiUrl.searchParams.set('order_by', order_by);
 
     if (due_date_mode) apiUrl.searchParams.set('due_date_mode', due_date_mode);
     if (due_date_mode === "exact" && due_date) apiUrl.searchParams.set('due_date', due_date);
@@ -160,6 +167,13 @@ if (notesList) {
     });
   }
 
+  if (order) {
+    order.addEventListener('change', () => {
+        clearTimeout(t);
+        fetchAndRender();
+    });
+  }
+
   function formatDateYYYYMMDD(yyyyMMdd) {
     if (!yyyyMMdd) return "";
     const [y, m, d] = yyyyMMdd.split("-");
@@ -185,11 +199,13 @@ if (notesList) {
     const currentI = select ? select.value.trim() : "";
     const currentMode = dateMode ? dateMode.value.trim() : "";
     const currentD = date ? date.value.trim() : "";
+    const currentO = order ? order.value.trim() : "";
 
     const chips = [];
 
     if (currentQ) chips.push(chip("Búsqueda", currentQ, "q"));
     if (currentI) chips.push(chip("Importancia", currentI, "importance"));
+    if (currentO) chips.push(chip("Ordenar por", currentO, "order_by"))
 
     if (currentMode === "exact") {
       if (currentD) chips.push(chip("Fecha", formatDateYYYYMMDD(currentD), "due_date"));
@@ -226,6 +242,7 @@ if (notesList) {
     const key = btn.getAttribute("data-clear");
     if (key === "q" && input) input.value = "";
     if (key === "importance" && select) select.value = "";
+    if (key === "order_by" && order) order.value = "";
     if (key === "due_date_mode" && dateMode) dateMode.value = "";
     if (key === "due_date" && date) date.value = "";
 
@@ -234,6 +251,7 @@ if (notesList) {
       if (select) select.value = "";
       if (dateMode) dateMode.value = "";
       if (date) date.value = "";
+      if (order) order.value = "";
     }
 
     syncDueDateUI();

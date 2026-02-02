@@ -149,14 +149,15 @@ class NotesController extends Controller
     }
 
     // funciones del controldor
-
     public function baseSearchQuery(Request $request)
     {
         $importances = ['baja', 'media', 'alta', 'none'];
         $due_date_modes = ['with', 'none', 'exact'];
+        $order_bys = ['created_at', 'updated_at', 'due_date'];
         $importance = trim((string) $request->query('importance', ''));
         $due_date_mode = trim((string) $request->query('due_date_mode', ''));
         $due_date = trim((string) $request->query('due_date', ''));
+        $order_by = trim((string) $request->query('order_by', ''));
         $q = trim((string) $request->query('q', ''));
         if (! in_array($importance, $importances, true)) {
             $importance = '';
@@ -164,10 +165,12 @@ class NotesController extends Controller
         if (! in_array($due_date_mode, $due_date_modes, true)) {
             $due_date_mode = '';
         }
+        if (! in_array($order_by, $order_bys, true)) {
+            $order_by = '';
+        }
 
         $notesQuery = Note::where('user_id', auth()->id())
-            ->orderBy('updated_at', 'desc')
-            ->select('id', 'title', 'importance', 'due_date', 'updated_at');
+            ->select('id', 'title', 'importance', 'due_date', 'updated_at', 'created_at');
 
         if ($q !== '') {
             $notesQuery->where(function ($sub) use ($q) {
@@ -176,7 +179,9 @@ class NotesController extends Controller
             });
         }
         if ($importance !== '') {
-            $importance === 'none' ? $notesQuery->whereNull('importance') : $notesQuery->where('importance', $importance);
+            $importance === 'none'
+                ? $notesQuery->whereNull('importance')
+                : $notesQuery->where('importance', $importance);
         }
         if ($due_date_mode !== '') {
             if ($due_date_mode === 'none') {
@@ -186,7 +191,16 @@ class NotesController extends Controller
             } elseif ($due_date_mode === 'with') {
                 $notesQuery->whereNotNull('due_date');
             }
+        }
 
+        if ($order_by === 'due_date') {
+            $notesQuery
+                ->orderByRaw('due_date IS NULL ASC')
+                ->orderBy('due_date', 'asc');
+        } elseif ($order_by !== '') {
+            $notesQuery->orderBy($order_by, 'desc');
+        } else {
+            $notesQuery->orderBy('updated_at', 'desc');
         }
 
         return $notesQuery;

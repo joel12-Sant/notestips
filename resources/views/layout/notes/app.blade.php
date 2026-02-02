@@ -75,6 +75,16 @@
                                     class="w-full h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
                             </div>
                         </div>
+                        <div>
+                            <label for="order_by" class="block text-xs font-medium text-slate-600 mb-1">Ordenar
+                                Por</label>
+                            <select name="order_by" id="order_by"
+                                class="h-10 px-3 rounded-xl border bg-slate-50 text-slate-900 border-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20">
+                                <option value="">-- Por defecto --</option>
+                                <option value="created_at">Fecha de creación</option>
+                                <option value="due_date">Fecha de realización</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
