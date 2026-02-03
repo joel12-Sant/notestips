@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules;
 
-class StoreUserRequest extends FormRequest
+class RegisteredUserStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +24,8 @@ class StoreUserRequest extends FormRequest
     {
         return [
 
-            'username' => ['required', 'string', 'max:32'],
-            'password' => ['required'],
+            'username' => ['required', 'string', 'max:32', 'unique:users,username'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
         ];
     }
@@ -33,8 +34,10 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'username.required' => 'El nombre de usuario es obligatorio.',
+            'username.unique' => 'Ese nombre de usuario ya está en uso.',
             'username.max' => 'El nombre de usuario no puede tener más de 32 caracteres.',
             'password.required' => 'La contraseña es obligatoria.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ];
     }
 }
