@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisteredUserStoreRequest;
-use App\Models\User;
+use App\Services\RegisteredUserService;
 use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
@@ -14,12 +14,9 @@ class RegisteredUserController extends Controller
         return view('register');
     }
 
-    public function store(RegisteredUserStoreRequest $request)
+    public function store(RegisteredUserStoreRequest $request, RegisteredUserService $registeredUserService)
     {
-        $user = User::create([
-            'username' => $request->username,
-            'password' => $request->password,
-        ]);
+        $user = $registeredUserService->createUser($request->validated());
 
         event(new Registered($user));
 
