@@ -3,46 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class NotesController extends Controller
 {
-    public function watch(Request $request)
+    public function watch(Request $request): View
     {
         $notes = $this->baseSearchQuery($request)->get();
 
-        $selectedNote = null;
+        $note = null;
         $noteNotFound = false;
 
-        return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
+        return view('notes.index', compact('notes', 'note', 'noteNotFound'));
     }
 
-    public function show($note_id, Request $request)
+    public function show(Note $note, Request $request): View
     {
         $notes = $this->baseSearchQuery($request)->get();
 
-        $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date', 'updated_at')
-            ->find($note_id);
-        if (! $selectedNote || auth()->user()->cannot('view', $selectedNote)) {
-            $selectedNote = null;
+        if (! $note || auth()->user()->cannot('view', $note)) {
+            $note = null;
             $noteNotFound = true;
         } else {
             $noteNotFound = false;
         }
 
-        return view('notes.index', compact('notes', 'selectedNote', 'noteNotFound'));
+        return view('notes.index', compact('notes', 'note', 'noteNotFound'));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View
     {
-        $selectedNote = null;
+        $note = null;
         $notes = $this->baseSearchQuery($request)->get();
 
-        return view('notes.create', compact('notes', 'selectedNote'));
+        return view('notes.create', compact('notes', 'note'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->merge([
             'importance' => $request->importance ?? null,
@@ -83,25 +84,22 @@ class NotesController extends Controller
         return redirect()->route('notes.index')->with('status', 'created');
     }
 
-    public function edit($note_id, Request $request)
+    public function edit(Note $note, Request $request): View
     {
 
         $notes = $this->baseSearchQuery($request)->get();
 
-        $selectedNote = Note::select('id', 'user_id', 'title', 'content', 'importance', 'due_date')
-            ->find($note_id);
-
-        if (! $selectedNote || auth()->user()->cannot('view', $selectedNote)) {
+        if (! $note || auth()->user()->cannot('view', $note)) {
             $noteNotFound = true;
-            $selectedNote = null;
+            $note = null;
         } else {
             $noteNotFound = false;
         }
 
-        return view('notes.edit', compact('notes', 'selectedNote', 'noteNotFound'));
+        return view('notes.edit', compact('notes', 'note', 'noteNotFound'));
     }
 
-    public function update(Request $request, $note_id)
+    public function update(Request $request, Note $note): RedirectResponse
     {
 
         $request->merge([
@@ -125,8 +123,6 @@ class NotesController extends Controller
             ]
         );
 
-        $note = Note::find($note_id);
-
         abort_if(! $note || auth()->user()->cannot('update', $note), 404);
 
         $note->update([
@@ -136,12 +132,11 @@ class NotesController extends Controller
             'due_date' => $validated['due_date'] ?? null,
         ]);
 
-        return redirect()->route('notes.show', ['note_id' => $note->id])->with('status', 'updated');
+        return redirect()->route('notes.show', ['note' => $note->id])->with('status', 'updated');
     }
 
-    public function destroy($note_id)
+    public function destroy(Note $note): RedirectResponse
     {
-        $note = Note::find($note_id);
         abort_if(! $note || auth()->user()->cannot('delete', $note), 404);
         $note->delete();
 
@@ -206,7 +201,7 @@ class NotesController extends Controller
         return $notesQuery;
     }
 
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         $notes = $this->baseSearchQuery($request)->get()->map(function ($note) {
             $importance = $note->importance;

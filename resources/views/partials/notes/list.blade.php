@@ -17,13 +17,13 @@
                 </div>
             @else
                 <ul role="list" class="divide-y divide-slate-200">
-                    @foreach ($notes as $note)
+                    @foreach ($notes as $s_note)
                         @php
-                            $isActive = $selectedNote && $selectedNote->id == $note->id;
+                            $isActive = $note && $note->id == $s_note->id;
 
-                            $importance = $note->importance;
-                            $due_date = $note->due_date
-                                ? \Carbon\Carbon::parse($note->due_date)->format('d/m/Y')
+                            $importance = $s_note->importance;
+                            $due_date = $s_note->due_date
+                                ? \Carbon\Carbon::parse($s_note->due_date)->format('d/m/Y')
                                 : null;
 
                             $badgeClasses = match ($importance) {
@@ -33,19 +33,19 @@
                                 default => 'bg-slate-100 text-slate-600',
                             };
 
-                            $lastEdited = $note->updated_at ?? now();
+                            $lastEdited = $s_note->updated_at ?? now();
                             $lastEditedLabel = method_exists($lastEdited, 'diffForHumans')
                                 ? $lastEdited->diffForHumans()
                                 : 'Hace un momento';
                         @endphp
 
                         <li>
-                            <a href="{{ route('notes.show', ['note_id' => $note->id] + (request('q') ? ['q' => request('q')] : []) + (request('importance') ? ['importance' => request('importance')] : [])) }}"
+                            <a href="{{ route('notes.show', ['note' => $s_note->id] + (request('q') ? ['q' => request('q')] : []) + (request('importance') ? ['importance' => request('importance')] : [])) }}"
                                 class="block p-4 transition
                                {{ $isActive ? 'bg-blue-100' : 'bg-white hover:bg-slate-50' }}"
                                 @if ($isActive) aria-current="true" @endif>
                                 <h3 class="mb-1 truncate text-slate-900">
-                                    {{ $note->title ?? 'Nota sin título' }}
+                                    {{ $s_note->title ?? 'Nota sin título' }}
                                 </h3>
                                 <div class="flex items-center gap-2 text-xs mb-2">
                                     @if (!empty($importance))

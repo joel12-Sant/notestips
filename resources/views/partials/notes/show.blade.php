@@ -1,6 +1,6 @@
 @php
-    $importance = $selectedNote->importance ?? null;
-    $dueDate = $selectedNote->due_date ?? null;
+    $importance = $note->importance ?? null;
+    $dueDate = $note->due_date ?? null;
 
     $badgeClasses = match ($importance) {
         'alta' => 'bg-red-50 text-red-600',
@@ -9,7 +9,7 @@
         default => 'bg-slate-100 text-slate-600',
     };
 
-    $lastEdited = $selectedNote->updated_at ?? now();
+    $lastEdited = $note->updated_at ?? now();
     $lastEditedLabel = method_exists($lastEdited, 'diffForHumans') ? $lastEdited->diffForHumans() : 'Hace un momento';
 
     $dueDateLabel = $dueDate ? \Carbon\Carbon::parse($dueDate)->format('d/m/Y') : null;
@@ -19,7 +19,7 @@
     <div class="flex items-start justify-between gap-4">
         <div class="min-w-0">
             <h1 class="text-4xl font-semibold text-slate-900">
-                {{ $selectedNote->title ?? 'Nota sin título' }}
+                {{ $note->title ?? 'Nota sin título' }}
             </h1>
 
             <div class="mt-3 flex flex-wrap items-center gap-4 text-sm text-slate-500">
@@ -45,12 +45,12 @@
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
-            <a href="{{ route('notes.edit', $selectedNote->id) }}"
+            <a href="{{ route('notes.edit', $note->id) }}"
                 class="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition" aria-label="Editar">
                 <x-icons.edit class="w-5 h-5" />
             </a>
 
-            <form method="POST" action="{{ route('notes.destroy', $selectedNote->id) }}"
+            <form method="POST" action="{{ route('notes.destroy', $note->id) }}"
                 onsubmit="return confirm('¿Seguro que quieres eliminar esta nota?');">
                 @csrf
                 @method('DELETE')
@@ -62,6 +62,6 @@
         </div>
     </div>
 
-    <div class="mt-8 text-slate-900 whitespace-pre-wrap leading-relaxed">{{ $selectedNote->content }}</div>
+    <div class="mt-8 text-slate-900 whitespace-pre-wrap leading-relaxed">{{ $note->content }}</div>
 
 </div>

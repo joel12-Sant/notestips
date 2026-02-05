@@ -1,10 +1,10 @@
-    <form action="{{ route('notes.update', $selectedNote->id) }}" method="POST" class="max-w-4xl mx-auto p-8">
+    <form action="{{ route('notes.update', $note->id) }}" method="POST" class="max-w-4xl mx-auto p-8">
         @csrf
         @method('PUT')
         <div class="space-y-4">
             <div>
                 <label for="title" class="sr-only">Título de la nota</label>
-                <input id="title" type="text" name="title" value="{{ old('title', $selectedNote->title) }}"
+                <input id="title" type="text" name="title" value="{{ old('title', $note->title) }}"
                     placeholder="Título de la nota"
                     class="w-full text-3xl px-4 py-2 rounded-lg border bg-slate-50 text-slate-900 transition
                         border-slate-200
@@ -27,7 +27,7 @@
                             focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20
                             @error('importance') border-red-400 focus:border-red-500 focus:ring-red-500/20 @enderror"
                         @error('importance') aria-invalid="true" aria-describedby="importance_error" @enderror>
-                        @php($importance = old('importance', $selectedNote->importance))
+                        @php($importance = old('importance', $note->importance))
                         <option value="">-- Sin importancia --</option>
                         <option value="alta" {{ $importance == 'alta' ? 'selected' : '' }}>Alta</option>
                         <option value="media" {{ $importance == 'media' ? 'selected' : '' }}>Media</option>
@@ -43,7 +43,7 @@
                         Fecha de realización
                     </label>
                     <input id="due_date" type="date" name="due_date"
-                        value="{{ old('due_date', optional($selectedNote->due_date)->format('Y-m-d')) }}"
+                        value="{{ old('due_date', optional($note->due_date)->format('Y-m-d')) }}"
                         class="w-full px-4 py-2 rounded-lg border bg-slate-50 text-slate-900 transition
                             border-slate-200
                             focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20
@@ -62,7 +62,7 @@
                         border-slate-200
                         focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20
                         @error('content') border-red-400 focus:border-red-500 focus:ring-red-500/20 @enderror"
-                    @error('content') aria-invalid="true" aria-describedby="content_error" @enderror>{{ old('content', $selectedNote->content) }}</textarea>
+                    @error('content') aria-invalid="true" aria-describedby="content_error" @enderror>{{ old('content', $note->content) }}</textarea>
 
                 @error('content')
                     <p id="content_error" class="mt-2 text-sm text-red-600" role="alert">{{ $message }}</p>

@@ -10,7 +10,7 @@
 
         <section class="flex-1 overflow-auto bg-slate-50">
             <div class="max-w-4xl mx-auto p-8">
-                @if ($selectedNote)
+                @if ($note)
                     @include('partials.notes.edit-form')
                 @else
                     <div class="h-full flex items-center justify-center text-slate-500">

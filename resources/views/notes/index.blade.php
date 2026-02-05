@@ -14,7 +14,7 @@
                     <div class="h-full flex items-center justify-center text-slate-500">
                         Nota no encontrada
                     </div>
-                @elseif ($selectedNote)
+                @elseif ($note)
                     @include('partials.notes.show')
                 @else
                     <div class="h-full flex items-center justify-center text-slate-500">
