@@ -20,7 +20,7 @@ class RegisteredUserService
                 "## Formato basico\n\n".
                 "- **Negrita** con `**texto**`\n".
                 "- *Cursiva* con `*texto*`\n".
-                "- Enlaces: [OpenAI](https://openai.com)\n".
+                "- Enlaces: [Github](https://github.com/joel-matias/)\n".
                 "- Codigo: `print('hola')`\n\n".
                 "## Tareas\n\n".
                 "- [ ] Crear mi primera tarea\n".
