@@ -1,6 +1,10 @@
 @php
     $importance = $note->importance ?? null;
     $dueDate = $note->due_date ?? null;
+    $renderedContent = \Illuminate\Support\Str::markdown($note->content ?? '', [
+        'html_input' => 'strip',
+        'allow_unsafe_links' => false,
+    ]);
 
     $badgeClasses = match ($importance) {
         'alta' => 'bg-red-50 text-red-600',
@@ -62,6 +66,18 @@
         </div>
     </div>
 
-    <div class="mt-8 text-slate-900 whitespace-pre-wrap leading-relaxed">{{ $note->content }}</div>
+    <article
+        class="mt-8 text-slate-900 leading-relaxed wrap-break-words
+            [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:mt-6 [&_h1]:mb-3
+            [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
+            [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
+            [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3
+            [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3
+            [&_li]:my-1 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300
+            [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:bg-slate-100 [&_code]:px-1
+            [&_code]:rounded [&_pre]:bg-slate-900 [&_pre]:text-slate-100 [&_pre]:p-4
+            [&_pre]:rounded-lg [&_pre]:overflow-auto [&_a]:text-blue-600 [&_a]:underline">
+        {!! $renderedContent !!}
+    </article>
 
 </div>
