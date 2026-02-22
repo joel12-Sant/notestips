@@ -12,6 +12,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notes/create', [NotesController::class, 'create'])->name('notes.create');
     Route::get('/notes/{note}/edit', [NotesController::class, 'edit'])->name('notes.edit');
     Route::put('/notes/{note}', [NotesController::class, 'update'])->name('notes.update');
+    Route::patch('/notes/{note}/tasks/{taskIndex}', [NotesController::class, 'toggleTask'])->name('notes.tasks.toggle');
     Route::delete('/notes/{note}', [NotesController::class, 'destroy'])->name('notes.destroy');
 
     Route::get('/notes/search', [NotesController::class, 'search'])->name('notes.search');

@@ -66,8 +66,10 @@
         </div>
     </div>
 
-    <article
-        class="mt-8 text-slate-900 leading-relaxed wrap-break-words
+    <article id="note-markdown-content"
+        data-toggle-task-url-template="{{ route('notes.tasks.toggle', ['note' => $note->id, 'taskIndex' => '__TASK_INDEX__']) }}"
+        data-csrf-token="{{ csrf_token() }}"
+        class="mt-8 text-slate-900 leading-relaxed break-words
             [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:mt-6 [&_h1]:mb-3
             [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
             [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
@@ -81,3 +83,53 @@
     </article>
 
 </div>
+
+@push('scripts')
+    <script>
+        (() => {
+            const container = document.getElementById('note-markdown-content');
+            if (!container) return;
+
+            const urlTemplate = container.dataset.toggleTaskUrlTemplate;
+            const csrfToken = container.dataset.csrfToken;
+            const taskCheckboxes = Array.from(container.querySelectorAll('li input[type="checkbox"]'));
+
+            taskCheckboxes.forEach((checkbox, taskIndex) => {
+                checkbox.disabled = false;
+                checkbox.dataset.taskIndex = String(taskIndex);
+                checkbox.classList.add('cursor-pointer');
+            });
+
+            container.addEventListener('change', async (event) => {
+                const checkbox = event.target.closest('input[type="checkbox"][data-task-index]');
+                if (!checkbox || checkbox.dataset.syncing === '1') return;
+
+                const taskIndex = checkbox.dataset.taskIndex;
+                const checked = checkbox.checked;
+                checkbox.dataset.syncing = '1';
+
+                try {
+                    const response = await fetch(urlTemplate.replace('__TASK_INDEX__', taskIndex), {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            completed: checked,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        checkbox.checked = !checked;
+                    }
+                } catch (error) {
+                    checkbox.checked = !checked;
+                } finally {
+                    delete checkbox.dataset.syncing;
+                }
+            });
+        })();
+    </script>
+@endpush

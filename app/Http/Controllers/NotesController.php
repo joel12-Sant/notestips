@@ -143,6 +143,45 @@ class NotesController extends Controller
         return redirect()->route('notes.index')->with('status', 'deleted');
     }
 
+    public function toggleTask(Request $request, Note $note, int $taskIndex): JsonResponse
+    {
+        abort_if(! $note || auth()->user()->cannot('update', $note), 404);
+        abort_if($taskIndex < 0, 422);
+
+        $validated = $request->validate([
+            'completed' => ['required', 'boolean'],
+        ]);
+
+        $lines = preg_split('/\R/u', $note->content ?? '') ?: [];
+        $currentTaskIndex = 0;
+        $updated = false;
+
+        foreach ($lines as $lineIndex => $line) {
+            if (! preg_match('/^(\s*[-*+]\s+\[)( |x|X)(\]\s?.*)$/u', $line, $matches)) {
+                continue;
+            }
+
+            if ($currentTaskIndex !== $taskIndex) {
+                $currentTaskIndex++;
+                continue;
+            }
+
+            $lines[$lineIndex] = $matches[1].($validated['completed'] ? 'x' : ' ').$matches[3];
+            $updated = true;
+            break;
+        }
+
+        abort_if(! $updated, 404);
+
+        $note->update([
+            'content' => implode("\n", $lines),
+        ]);
+
+        return response()->json([
+            'status' => 'ok',
+        ]);
+    }
+
     // funciones del controldor
     public function baseSearchQuery(Request $request)
     {
