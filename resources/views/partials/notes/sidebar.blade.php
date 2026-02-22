@@ -1,7 +1,7 @@
 <aside class="h-full w-72 border- bg-white">
     <div class="flex h-full flex-col px-4 py-5">
         <header>
-            <a href="{{ route('notes.index') }}" class="flex items-center gap-2">
+            <a href="{{ route('home') }}" class="flex items-center gap-2">
                 <svg class="w-8 h-8 text-(--color-primary)" viewBox="0 0 24 24" fill="none" aria-hidden="true"
                     focusable="false">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2"
